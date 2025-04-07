@@ -1,0 +1,52 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class HumanAvatarBehaviourHandler : MonoBehaviour
+{
+
+    public EyeGazeTracker gazeTracker;
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        FoundVictim();
+    }
+
+
+    void FoundVictim(){
+        if(Input.GetKeyDown(KeyCode.C)){
+            // Vector2 _gazePointer = gazeTracker.gazePosition;
+            Debug.Log(gazeTracker.gazePosition);
+            Vector3 hitPos = GetHitPositionGaze(gazeTracker.gazePosition);
+            
+        }
+    }
+
+
+    public Vector3 GetHitPositionGaze(Vector2 gazePosition)
+    {
+        Debug.Log(gazePosition);
+        RaycastHit hit;
+        var ray = Camera.main.ScreenPointToRay(gazePosition);
+
+        if (Physics.Raycast(ray, out hit))
+        {
+            if (hit.collider != null && hit.collider.transform.gameObject.tag == "Human")
+            {
+                GameObject victim = hit.collider.transform.parent.gameObject;
+                Debug.Log(victim.name);
+                victim.SetActive(false);
+                return hit.collider.transform.position;
+            }else{
+                Debug.Log("Hard to detect Victims, Move closer: "+ hit.collider.gameObject.name);
+            }
+        }
+        return Vector3.negativeInfinity;
+    }
+}
